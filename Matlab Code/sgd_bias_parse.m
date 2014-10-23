@@ -2,12 +2,11 @@
 close all
 clear
 
-numFeature = 30;
+numFeature = 100;
 learningRate = 0.001;
-regulationRate = 0.01;
+regulationRate = 0.001;
 
-[userID,movieID,rating,time] = importfile('u1.base');
-[userIDTest, movieIDTest, ratingTest, timeTest] = importfile('u1.test');
+[userID,movieID,rating,time] = importfile('u.data');
 
 numUser = max(userID);
 numMovie = max(movieID);
@@ -62,34 +61,16 @@ while loopCondition
     
     RMSE(training) = RMSE(training)/length(userID);
     
-    testRMSE(training) = 0;
+    disp(RMSE(training))
     
-    for i = 1:length(userIDTest)
-        
-        predictionForLoop = globalAverage + biasMovie(movieIDTest(i)) + biasUser(userIDTest(i)) + predRatings(userIDTest(i), movieIDTest(i));
-        
-        error = ratingTest(i) - predictionForLoop;
-        
-%         if isnan(error)
-%             disp(eror)
-%         end
-        
-        testRMSE(training) = testRMSE(training) + error^2;
-        
-    end
-    
-    testRMSE(training) = testRMSE(training)/length(userIDTest);
-    
-    disp(testRMSE(training))
-    
-    plot(1:training,RMSE, 1:training,testRMSE);
+    plot(1:training,RMSE);
     drawnow;
     
     if training > 10 && RMSE(training)/RMSE(training-1) > 0.9999999
         loopCondition = false;
     end
     
-    if training > 1000
+    if training > 100
         loopCondition = false;
     end
     
@@ -103,6 +84,14 @@ figure, scatter(userTSNE(:,1),userTSNE(:,2))
 movieTSNE = tsne(movieFeature, [], 2);
 figure, scatter(movieTSNE(:,1),movieTSNE(:,2))
 
+csvwrite('movieTSNE.csv',movieTSNE);
+csvwrite('userTSNE.csv',userTSNE);
+
+userTSNENor = (userTSNE + 60)/120.0
+movieTSNENor = (movieTSNE+60) /120
+
+csvwrite('movieTSNENor.csv',movieTSNENor);
+csvwrite('userTSNENor.csv',userTSNENor);
 
 
 
