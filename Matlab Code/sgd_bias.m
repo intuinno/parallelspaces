@@ -2,7 +2,7 @@
 close all
 clear
 
-numFeature = 30;
+numFeature = 5;
 learningRate = 0.001;
 regulationRate = 0.01;
 
